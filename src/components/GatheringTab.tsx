@@ -114,30 +114,19 @@ export const GatheringTab: React.FC<GatheringTabProps> = ({
   };
 
   return (
-    <div className="space-y-4 pb-24">
-      {/* 260928 Freshman Cohort Header Banner */}
-      <div className="p-4 rounded-3xl bg-gradient-to-r from-[#FFF0E2] via-[#FFF6EE] to-[#FFEFE0] border border-[#FFA070]/40 shadow-xs space-y-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <span className="px-2 py-0.5 rounded-full bg-[#FF7A30] text-white text-[10px] font-black">
-              260928 기수 전용
-            </span>
-            <span className="text-xs font-black text-[#5A3E36]">동기 소모임 & 번개 공간</span>
-          </div>
-          <span className="text-[10px] font-bold text-[#D86E38]">10/14 부서배치 전 라포 형성</span>
+    <div className="space-y-3 pb-24">
+      {/* Compact Header */}
+      <div className="flex items-center justify-between pt-1">
+        <div>
+          <h2 className="text-base font-black text-[#5A3E36]">동기 소모임 & 번개</h2>
+          <p className="text-[11px] text-slate-500">자유롭게 참여하거나 모임을 열어보세요.</p>
         </div>
-        <p className="text-[11px] text-[#7A645A] leading-relaxed">
-          같은 조(6명) 외에도 다른 조 300명 동기들과 자유롭게 어울려보세요! 
-          기숙사 치맥, 테니스/러닝, 보드게임 등 가벼운 번개에 참여하거나 직접 모집할 수 있습니다.
-        </p>
-
-        {/* Quick CTA to create */}
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="w-full py-2.5 rounded-2xl bg-gradient-to-r from-[#FF7A30] to-[#FFA070] text-white font-black text-xs shadow-md shadow-[#FFA070]/30 hover:brightness-105 active:scale-98 transition-all flex items-center justify-center space-x-1.5"
+          className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-[#FF7A30] to-[#FFA070] text-white font-bold text-xs shadow-xs hover:brightness-105 active:scale-95 transition-all flex items-center space-x-1"
         >
-          <Flame className="w-4 h-4 fill-white" />
-          <span>⚡ 새로운 번개 / 소모임 만들기</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span>모임 만들기</span>
         </button>
       </div>
 

@@ -308,25 +308,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
   return (
     <div className="min-h-screen bg-[#FAF4ED] text-slate-800 flex flex-col justify-center items-center p-3 sm:p-4 animate-in fade-in duration-300">
-      <div className="w-full max-w-sm bg-white rounded-[32px] border border-[#E5D7C7] shadow-xl p-5 sm:p-6 space-y-4">
+      <div className="w-full max-w-sm bg-white rounded-3xl border border-[#E5D7C7] shadow-xl p-5 sm:p-6 space-y-4">
         
         {/* Brand Header */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-1.5 pb-1">
           <div className="flex justify-center">
             <HyLinkLogo size="md" showSubtitle={false} />
           </div>
-          <div className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#FFF0E2] text-[#D86E38] border border-[#FFA070]/40 text-[10px] font-black">
-            <span>260928 신입 기수 전용 네트워킹</span>
-          </div>
-          <h1 className="text-lg font-black text-[#5A3E36] leading-tight">
-            동기 라포 형성 & 크로스 커피챗
-          </h1>
-          <p className="text-xs text-slate-500 leading-relaxed max-w-xs mx-auto">
-            SMS 인증번호 없이, <strong>이름 + 전화번호 + 고유 숫자 4자리</strong>로 간편하고 안전하게 로그인하세요.
+          <p className="text-xs font-bold text-[#D86E38]">
+            260928 신입 동기 네트워킹
           </p>
         </div>
 
-        {/* Mode Segmented Control: [로그인] vs [신규 등록 (첫 방문)] */}
+        {/* Mode Switch Tabs: 로그인 vs 신규 등록 */}
         <div className="grid grid-cols-2 p-1 rounded-2xl bg-[#F4EBE1] border border-[#E5D7C7] text-xs font-black">
           <button
             type="button"
@@ -338,7 +332,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             }`}
           >
             <LogIn className="w-3.5 h-3.5" />
-            <span>기존 회원 로그인</span>
+            <span>로그인</span>
           </button>
 
           <button
@@ -351,33 +345,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             }`}
           >
             <UserPlus className="w-3.5 h-3.5" />
-            <span>신규 등록 (첫 방문)</span>
+            <span>신규 등록</span>
           </button>
         </div>
 
-        {/* Mode Guide Banner */}
-        <div className="p-2.5 rounded-xl bg-[#FAF4ED] border border-[#EFE3D5] flex items-start space-x-2 text-[11px] text-slate-600">
-          <Info className="w-4 h-4 text-[#FF7A30] shrink-0 mt-0.5" />
-          <p className="leading-tight">
-            {authMode === 'register' ? (
-              <span>
-                처음 방문하셨나요? 이름과 전화번호, <strong>본인만의 고유 숫자 4자리</strong>를 설정하시면 다음부터 해당 정보로 바로 로그인됩니다.
-              </span>
-            ) : (
-              <span>
-                등록하셨던 이름, 휴대폰 번호, <strong>고유 숫자 4자리</strong>를 입력해 로그인해 주세요.
-              </span>
-            )}
-          </p>
-        </div>
-
         {/* Authentication Form */}
-        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-3 text-xs">
           
           {/* 1. Name Field */}
           <div>
             <label className="block text-[11px] font-black text-[#5A3E36] mb-1">
-              이름 (실명 또는 닉네임)
+              이름
             </label>
             <div className="relative">
               <input
@@ -388,7 +366,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   setName(e.target.value);
                   if (errorMessage) setErrorMessage(null);
                 }}
-                placeholder="예: 김하늘"
+                placeholder="이름 입력"
                 className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#E5D7C7] bg-[#FAF4ED] font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#FF7A30]"
               />
               <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
@@ -398,7 +376,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           {/* 2. Phone Number Field */}
           <div>
             <label className="block text-[11px] font-black text-[#5A3E36] mb-1">
-              휴대폰 번호
+              전화번호
             </label>
             <div className="relative">
               <input
@@ -417,9 +395,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           {/* 3. Unique 4-Digit Number (PIN) */}
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-[11px] font-black text-[#5A3E36] flex items-center space-x-1">
-                <span>{authMode === 'register' ? '설정할 고유 숫자 4자리' : '본인 고유 숫자 4자리'}</span>
-                <span className="text-[#FF7A30]">*</span>
+              <label className="text-[11px] font-black text-[#5A3E36]">
+                비밀번호 (숫자 4자리)
               </label>
               <button
                 type="button"
@@ -440,7 +417,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 maxLength={4}
                 value={pinCode}
                 onChange={handlePinChange}
-                placeholder="숫자 4자리 (예: 2609)"
+                placeholder="숫자 4자리"
                 className="w-full pl-9 pr-14 py-2.5 rounded-xl border border-[#E5D7C7] bg-[#FAF4ED] font-mono font-black text-center tracking-widest text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#FF7A30]"
               />
               <KeyRound className="w-4 h-4 text-[#FF7A30] absolute left-3 top-3" />
@@ -448,18 +425,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 {pinCode.length}/4
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 mt-1">
-              {authMode === 'register'
-                ? '기억하기 쉬운 본인만의 4자리 숫자(PIN)를 입력하세요.'
-                : '등록 시 설정했던 숫자 4자리를 입력하세요.'}
-            </p>
           </div>
 
           {/* 4. PIN Confirm (Only in Register mode) */}
           {authMode === 'register' && (
             <div className="animate-in fade-in">
               <label className="block text-[11px] font-black text-[#5A3E36] mb-1">
-                고유 숫자 4자리 재확인
+                비밀번호 확인
               </label>
               <div className="relative">
                 <input
@@ -470,7 +442,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   maxLength={4}
                   value={pinConfirm}
                   onChange={handlePinConfirmChange}
-                  placeholder="숫자 4자리 한번 더 입력"
+                  placeholder="숫자 4자리 재입력"
                   className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-[#E5D7C7] bg-[#FAF4ED] font-mono font-black text-center tracking-widest text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#FF7A30]"
                 />
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
@@ -481,35 +453,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             </div>
           )}
 
-          {/* Department & Cohort Fixed Info Notice */}
-          <div className="p-2.5 rounded-xl bg-[#FAF4ED] border border-[#EFE3D5] text-[11px] text-slate-600 space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">소속 부서</span>
-              <span className="font-bold text-[#5A3E36]">미배치 (10/14 부서배치 예정) 🔒</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">입사 기수</span>
-              <span className="font-bold text-[#5A3E36]">2026.09.28 신입 (1년차)</span>
-            </div>
-          </div>
-
           {/* Mandatory Checkboxes (In Register mode) */}
           {authMode === 'register' && (
-            <div className="space-y-2 pt-1 border-t border-slate-100 text-[11px] animate-in fade-in">
-              {/* 1. 260928 입사 기수 확인 */}
-              <label className="flex items-start space-x-2 cursor-pointer select-none">
+            <div className="space-y-1.5 pt-1 border-t border-slate-100 text-[11px] animate-in fade-in">
+              <label className="flex items-center space-x-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={isCohortConfirmed}
                   onChange={(e) => setIsCohortConfirmed(e.target.checked)}
-                  className="mt-0.5 rounded text-[#FF7A30] focus:ring-[#FF7A30]"
+                  className="rounded text-[#FF7A30] focus:ring-[#FF7A30]"
                 />
-                <span className="text-slate-700 font-bold leading-tight">
-                  [필수] 2026년 9월 28일 입사한 SK하이닉스 신입 구성원이 맞습니다.
+                <span className="text-slate-700 font-medium">
+                  [필수] 260928 신입 사원 확인
                 </span>
               </label>
 
-              {/* 2. 개인정보 수집 이용 동의 */}
               <div className="flex items-center justify-between">
                 <label className="flex items-center space-x-2 cursor-pointer select-none">
                   <input
@@ -518,8 +476,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                     onChange={(e) => setIsPrivacyAgreed(e.target.checked)}
                     className="rounded text-[#FF7A30] focus:ring-[#FF7A30]"
                   />
-                  <span className="text-slate-700 font-bold">
-                    [필수] 개인정보 수집 및 이용 동의
+                  <span className="text-slate-700 font-medium">
+                    [필수] 개인정보 수집·이용 동의
                   </span>
                 </label>
                 <button
@@ -555,17 +513,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           <div className="space-y-2 pt-1">
             <button
               type="submit"
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#FF7A30] via-[#FF8C42] to-[#FFA070] text-white font-black text-xs shadow-md shadow-[#FFA070]/30 hover:brightness-105 active:scale-98 transition-all flex items-center justify-center space-x-2"
+              className="w-full py-2.5 rounded-2xl bg-gradient-to-r from-[#FF7A30] via-[#FF8C42] to-[#FFA070] text-white font-black text-xs shadow-md shadow-[#FFA070]/30 hover:brightness-105 active:scale-98 transition-all flex items-center justify-center space-x-1.5"
             >
               {authMode === 'register' ? (
                 <>
                   <UserPlus className="w-4 h-4" />
-                  <span>고유 번호 4자리로 등록하고 시작하기</span>
+                  <span>등록하고 시작하기</span>
                 </>
               ) : (
                 <>
                   <LogIn className="w-4 h-4" />
-                  <span>고유 번호로 로그인</span>
+                  <span>로그인</span>
                 </>
               )}
             </button>
@@ -574,24 +532,23 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             <button
               type="button"
               onClick={handleQuickDemoLogin}
-              className="w-full py-2.5 rounded-2xl bg-[#FFF0E2] hover:bg-[#FFE3CE] text-[#D86E38] border border-[#FFA070]/40 font-black text-xs transition-all flex items-center justify-center space-x-1.5 active:scale-98"
+              className="w-full py-2 rounded-2xl bg-[#FFF0E2] hover:bg-[#FFE3CE] text-[#D86E38] border border-[#FFA070]/40 font-black text-xs transition-all flex items-center justify-center space-x-1.5 active:scale-98"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>신입 동기 김하늘 TL (2609) 1초 바로 입장</span>
+              <span>체험용 계정으로 바로 시작</span>
             </button>
           </div>
 
           {/* Bottom Switch Link */}
-          <div className="text-center pt-1">
+          <div className="text-center pt-0.5">
             {authMode === 'login' ? (
               <button
                 type="button"
                 onClick={() => switchMode('register')}
                 className="text-[11px] text-slate-500 hover:text-[#FF7A30] font-bold inline-flex items-center space-x-1 transition-colors"
               >
-                <span>처음 이용하시나요?</span>
-                <span className="text-[#FF7A30] underline">고유 4자리 설정하고 신규 등록</span>
-                <ArrowRight className="w-3 h-3 text-[#FF7A30]" />
+                <span>처음이신가요?</span>
+                <span className="text-[#FF7A30] underline">신규 등록</span>
               </button>
             ) : (
               <button
@@ -600,8 +557,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 className="text-[11px] text-slate-500 hover:text-[#5A3E36] font-bold inline-flex items-center space-x-1 transition-colors"
               >
                 <span>이미 등록하셨나요?</span>
-                <span className="text-[#5A3E36] underline">기존 정보로 로그인하기</span>
-                <ArrowRight className="w-3 h-3 text-[#5A3E36]" />
+                <span className="text-[#5A3E36] underline">로그인</span>
               </button>
             )}
           </div>

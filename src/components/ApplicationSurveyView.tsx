@@ -203,13 +203,13 @@ export const ApplicationSurveyView: React.FC<ApplicationSurveyViewProps> = ({
 
       {/* STEP 1: Meeting Purpose */}
       {currentStep === 1 && (
-        <div className="space-y-4 animate-in fade-in duration-200">
-          <div className="space-y-1 px-1">
-            <h2 className={`text-xl font-black ${theme.textPrimary} leading-tight`}>
-              이번 매칭에 참여하시는 주된 목적은?
+        <div className="space-y-3.5 animate-in fade-in duration-200">
+          <div className="space-y-0.5 px-1">
+            <h2 className={`text-lg font-black ${theme.textPrimary}`}>
+              매칭 참여 목적
             </h2>
             <p className={`text-xs ${theme.textSecondary}`}>
-              가장 관심 있는 목적 하나를 선택해 주세요
+              원하시는 목적을 선택해 주세요.
             </p>
           </div>
 
@@ -222,19 +222,19 @@ export const ApplicationSurveyView: React.FC<ApplicationSurveyViewProps> = ({
                   data-demo-id={`survey-purpose-${opt.id}`}
                   type="button"
                   onClick={() => setSelectedPurpose(opt.id)}
-                  className={`w-full p-4 rounded-2xl border text-left transition-all active:scale-[0.98] flex items-center justify-between ${
+                  className={`w-full p-3.5 rounded-2xl border text-left transition-all active:scale-[0.98] flex items-center justify-between ${
                     isSelected
                       ? `bg-[#FFF0E2] border-[#FFA070] ring-2 ring-[#FFA070]/20 shadow-xs`
                       : `${theme.bgSurface} ${theme.borderPrimary} hover:border-[#FFA070]/50 shadow-2xs`
                   }`}
                 >
-                  <div className="flex items-center space-x-3.5">
-                    <span className="text-2xl shrink-0">{opt.icon}</span>
-                    <span className={`text-sm sm:text-base font-black ${isSelected ? 'text-[#5A3E36]' : theme.textPrimary}`}>
+                  <div className="flex items-center space-x-3">
+                    <span className="text-xl shrink-0">{opt.icon}</span>
+                    <span className={`text-sm font-bold ${isSelected ? 'text-[#5A3E36]' : theme.textPrimary}`}>
                       {opt.title}
                     </span>
                   </div>
-                  {isSelected && <Check className="w-5 h-5 text-[#FFA070] stroke-[3]" />}
+                  {isSelected && <Check className="w-4 h-4 text-[#FFA070] stroke-[3]" />}
                 </button>
               );
             })}
@@ -244,13 +244,13 @@ export const ApplicationSurveyView: React.FC<ApplicationSurveyViewProps> = ({
 
       {/* STEP 2: Peer Style */}
       {currentStep === 2 && (
-        <div className="space-y-4 animate-in fade-in duration-200">
-          <div className="space-y-1 px-1">
-            <h2 className={`text-xl font-black ${theme.textPrimary} leading-tight`}>
-              어떤 유형의 동료를 선호하시나요?
+        <div className="space-y-3.5 animate-in fade-in duration-200">
+          <div className="space-y-0.5 px-1">
+            <h2 className={`text-lg font-black ${theme.textPrimary}`}>
+              선호하는 동기 유형
             </h2>
             <p className={`text-xs ${theme.textSecondary}`}>
-              만나고 싶은 동료 스타일을 선택해 주세요
+              만나고 싶은 동기 스타일을 선택해 주세요.
             </p>
           </div>
 

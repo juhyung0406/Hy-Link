@@ -303,10 +303,10 @@ function AppContent() {
   return (
     <div className={`min-h-screen ${theme.bgCanvas} flex flex-col justify-start items-center sm:py-6 font-sans antialiased transition-colors duration-300`}>
       {/* Desktop view indicator badge */}
-      <div className="hidden sm:flex items-center space-x-2 text-slate-600 text-xs mb-3 font-medium">
-        <Smartphone className="w-3.5 h-3.5 text-indigo-600" />
-        <span className="font-black text-slate-800">Hy-Link (하이링크)</span>
-        <span>• SK하이닉스 이천캠퍼스 One Team 매칭 ({theme.versionLabel})</span>
+      <div className="hidden sm:flex items-center space-x-2 text-slate-500 text-xs mb-3 font-medium">
+        <Smartphone className="w-3.5 h-3.5 text-[#FF7A30]" />
+        <span className="font-bold text-slate-700">Hy-Link</span>
+        <span>• 260928 신입 동기 매칭</span>
       </div>
 
       {/* Smartphone Device Canvas Container */}
@@ -322,24 +322,17 @@ function AppContent() {
           onOpenDemo={handleStartDemo}
         />
 
-        {/* Quick Showcase Banner */}
-        <div className="px-4 pt-3 pb-0.5">
+        {/* Quick Demo Pill */}
+        <div className="px-4 pt-2 pb-0.5">
           <button
             onClick={handleStartDemo}
-            className="w-full py-2 px-3.5 rounded-2xl bg-gradient-to-r from-[#FF7A30] via-[#FFA070] to-[#FF8C42] text-white shadow-xs hover:shadow-md transition-all flex items-center justify-between group active:scale-98"
+            className="w-full py-1.5 px-3 rounded-xl bg-[#FFF0E2] hover:bg-[#FFE5D2] border border-[#FFA070]/30 text-[#D86E38] transition-all flex items-center justify-between group active:scale-98"
           >
-            <div className="flex items-center space-x-2 text-left min-w-0">
-              <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                <Play className="w-3 h-3 fill-white ml-0.5" />
-              </span>
-              <div className="min-w-0">
-                <p className="text-[11px] font-black leading-tight truncate">🎬 실제 어플 조작 시연 (마우스 커서 직접 입력)</p>
-                <p className="text-[9px] text-white/90 leading-tight truncate">1단계 프로필 스크롤 입력 → 2단계 동료풀 이력보기 & 맞춤 매칭</p>
-              </div>
+            <div className="flex items-center space-x-1.5">
+              <Play className="w-3 h-3 fill-[#D86E38] text-[#D86E38]" />
+              <span className="text-[11px] font-bold">화면 자동 시연 보기</span>
             </div>
-            <span className="text-[10px] font-black bg-white/25 px-2 py-0.5 rounded-full shrink-0 group-hover:bg-white group-hover:text-[#D86E38] transition-colors">
-              시연 시작
-            </span>
+            <span className="text-[10px] font-bold opacity-80 group-hover:opacity-100">시작 ▶</span>
           </button>
         </div>
 

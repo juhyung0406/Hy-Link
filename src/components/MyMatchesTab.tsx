@@ -85,18 +85,16 @@ export const MyMatchesTab: React.FC<MyMatchesTabProps> = ({ sentMatches = [] }) 
   };
 
   return (
-    <div className="space-y-4 pb-24">
-      {/* Top Banner Notice */}
-      <div className="p-4 rounded-3xl bg-amber-50 border border-amber-200/80 shadow-xs space-y-1.5">
-        <div className="flex items-center space-x-2">
-          <MessageCircle className="w-4 h-4 text-amber-700" />
-          <h2 className="text-xs font-black text-amber-900">
-            카카오톡 오픈채팅 대화 안내
-          </h2>
+    <div className="space-y-3 pb-24">
+      {/* Header */}
+      <div className="flex items-center justify-between pt-1">
+        <div>
+          <h2 className="text-base font-black text-[#5A3E36]">내 매칭 목록</h2>
+          <p className="text-[11px] text-slate-500">오픈채팅으로 대화를 나눠보세요.</p>
         </div>
-        <p className="text-[11px] text-amber-800 leading-relaxed">
-          매칭이 성사된 동기와는 제공된 <strong>카카오톡 오픈채팅 링크</strong>를 통해 카카오톡 앱에서 실시간으로 일정을 맞추고 대화를 나눌 수 있습니다.
-        </p>
+        <span className="text-[11px] font-bold text-[#D86E38] bg-[#FFF0E2] px-2 py-0.5 rounded-full">
+          {displayList.length}명
+        </span>
       </div>
 
       {/* Matches List */}
