@@ -67,6 +67,8 @@ export const MyPageModal: React.FC<MyPageModalProps> = ({
 
   const [name, setName] = useState(currentUser.name);
   const [phone, setPhone] = useState(currentUser.phone || '010-8292-2609');
+  const [pinCode, setPinCode] = useState(currentUser.pinCode || '2609');
+  const [showPin, setShowPin] = useState(false);
   const [avatar, setAvatar] = useState(currentUser.avatar || MASCOT_AVATARS.haru);
   const [mbti, setMbti] = useState(currentUser.mbti || 'ENFP');
   const [hashtags, setHashtags] = useState<string[]>(
@@ -97,6 +99,7 @@ export const MyPageModal: React.FC<MyPageModalProps> = ({
     if (isOpen) {
       setName(currentUser.name);
       setPhone(currentUser.phone || '010-8292-2609');
+      setPinCode(currentUser.pinCode || '2609');
       setAvatar(currentUser.avatar || MASCOT_AVATARS.haru);
       setMbti(currentUser.mbti || 'ENFP');
       setHashtags(currentUser.hashtags || ['#ENFP', '#테니스', '#커피마실사람']);
@@ -152,6 +155,7 @@ export const MyPageModal: React.FC<MyPageModalProps> = ({
       ...currentUser,
       name: name.trim() || currentUser.name,
       phone: phone.trim(),
+      pinCode: pinCode.trim() || currentUser.pinCode || '2609',
       department: '미배치 (10/14 부서배치 예정)',
       jobTitle: 'TL (26.09 신입)',
       tenure: '1년차 (26.09 입사)',
@@ -300,6 +304,58 @@ export const MyPageModal: React.FC<MyPageModalProps> = ({
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-[#E5D7C7] bg-[#FAF4ED] font-bold text-slate-800"
               />
+            </div>
+
+            {/* Phone Number Field + Privacy Toggle */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-black text-[#5A3E36]">휴대폰 번호 (로그인 계정)</label>
+                <button
+                  type="button"
+                  onClick={() => setPrivacy((p) => ({ ...p, isPhonePublic: !p.isPhonePublic }))}
+                  className="text-[10px] text-slate-400 hover:text-[#D86E38] flex items-center space-x-0.5"
+                >
+                  {privacy.isPhonePublic ? <Eye className="w-2.5 h-2.5" /> : <EyeOff className="w-2.5 h-2.5" />}
+                  <span>{privacy.isPhonePublic ? '번호 공개' : '번호 비공개'}</span>
+                </button>
+              </div>
+              <input
+                type="tel"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="010-0000-0000"
+                className="w-full px-3 py-2 rounded-xl border border-[#E5D7C7] bg-[#FAF4ED] font-mono font-bold text-slate-800"
+              />
+            </div>
+
+            {/* 4-Digit PIN Setting */}
+            <div className="space-y-1 p-2.5 rounded-xl bg-orange-50/60 border border-orange-200/80">
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-black text-[#D86E38] flex items-center space-x-1">
+                  <span>로그인 고유 번호 (숫자 4자리 PIN)</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowPin(!showPin)}
+                  className="text-[10px] text-[#D86E38] hover:underline flex items-center space-x-0.5"
+                >
+                  {showPin ? <EyeOff className="w-2.5 h-2.5" /> : <Eye className="w-2.5 h-2.5" />}
+                  <span>{showPin ? '숨기기' : '표시'}</span>
+                </button>
+              </div>
+              <input
+                type={showPin ? 'text' : 'password'}
+                inputMode="numeric"
+                maxLength={4}
+                value={pinCode}
+                onChange={(e) => setPinCode(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
+                placeholder="2609"
+                className="w-full px-3 py-2 rounded-xl border border-orange-300 bg-white font-mono font-black text-center tracking-widest text-sm text-slate-800"
+              />
+              <p className="text-[10px] text-slate-500">
+                * SMS 없이 이름 + 휴대폰 번호 + 이 고유 4자리로 로그인합니다.
+              </p>
             </div>
 
             {/* Department (LOCKED) */}

@@ -55,6 +55,7 @@ export interface UserProfile {
   isWorkHistoryPublic: boolean;
   groupSizePreference: '1:1' | 'small' | 'any';
   isVerified260928?: boolean; // 260928 입사 인증
+  pinCode?: string; // 로그인용 고유 숫자 4자리
   isLoggedIn: boolean;
 }
 

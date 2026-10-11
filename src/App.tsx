@@ -21,6 +21,8 @@ import { ThemeProvider, useAppTheme } from './theme/ThemeContext';
 
 const DEFAULT_USER: UserProfile = {
   name: '김하늘',
+  phone: '010-8292-2609',
+  pinCode: '2609',
   department: '미배치 (10/14 부서배치 예정)',
   jobTitle: 'TL (26.09 신입)',
   tenure: '1년차 (26.09 입사)',
@@ -158,6 +160,26 @@ function AppContent() {
 
   const handleSaveProfile = (updated: UserProfile) => {
     saveUserToStorage(updated);
+    try {
+      const raw = localStorage.getItem('hylink_registered_users');
+      if (raw) {
+        const users = JSON.parse(raw);
+        const idx = users.findIndex(
+          (u: any) =>
+            (updated.phone && u.phone === updated.phone) ||
+            u.name === updated.name
+        );
+        if (idx !== -1) {
+          users[idx].name = updated.name;
+          if (updated.phone) users[idx].phone = updated.phone;
+          if (updated.pinCode) users[idx].pinCode = updated.pinCode;
+          users[idx].profile = { ...users[idx].profile, ...updated };
+          localStorage.setItem('hylink_registered_users', JSON.stringify(users));
+        }
+      }
+    } catch (e) {
+      console.error('Failed to sync profile update to registered users list:', e);
+    }
   };
 
   const handleLogout = () => {
