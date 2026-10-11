@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <defs>
+    <linearGradient id="coralGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7A3D" />
+      <stop offset="100%" stop-color="#E54E1B" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.18" />
+    </filter>
+  </defs>
+  <rect width="180" height="180" rx="38" fill="url(#coralGrad)" />
+  <g filter="url(#shadow)">
+    <!-- Connected Network nodes / Link icon symbolizing Hy-Link -->
+    <circle cx="56" cy="62" r="14" fill="#FFFFFF" />
+    <circle cx="124" cy="62" r="14" fill="#FFFFFF" />
+    <circle cx="90" cy="118" r="18" fill="#FFFFFF" />
+    <path d="M56 62 L90 118 M124 62 L90 118 M56 62 L124 62" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+    <!-- Center spark/dot -->
+    <circle cx="90" cy="118" r="8" fill="#FF6B35" />
+  </g>
+  <text x="90" y="156" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" letter-spacing="1">HY-LINK</text>
+</svg>

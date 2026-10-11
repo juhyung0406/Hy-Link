@@ -1,0 +1,8 @@
+{
+  "name": "Remix OneTeam AI - 동료 매칭 Agent 시스템 및 프롬프트 가이드",
+  "description": "SKMS One Team 가치 기반 AI 동료 매칭 Agent 구축 로드맵, 단계별 실전 프롬프트 팩, 및 대화형 매칭 시뮬레이터",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

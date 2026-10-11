@@ -1,0 +1,28 @@
+{
+  "name": "Hy-Link | SK하이닉스 260928 One Team",
+  "short_name": "Hy-Link",
+  "description": "SK하이닉스 260928 신입 구성원 One Team 네트워킹 및 모임 플랫폼",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF9F5",
+  "theme_color": "#FF6B35",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
