@@ -123,26 +123,31 @@ export const CategorizedInterestSelector: React.FC<CategorizedInterestSelectorPr
         </button>
       </div>
 
-      {/* Broad Categories Tabs (대분류) */}
-      <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none">
-        {INTEREST_CATEGORIES.map((cat) => {
-          const isActive = cat.id === activeCategoryId;
-          return (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => setActiveCategoryId(cat.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all flex items-center space-x-1.5 ${
-                isActive
-                  ? 'bg-gradient-to-r from-[#FFA070] to-[#F7824B] text-white shadow-xs'
-                  : `${theme.bgSurface} ${theme.textSecondary} border ${theme.borderPrimary} hover:border-[#FFA070]/40`
-              }`}
-            >
-              <span>{cat.icon}</span>
-              <span>{cat.name}</span>
-            </button>
-          );
-        })}
+      {/* Broad Categories Grid (좌우 스크롤 없이 한눈에 선택하는 6대 카테고리) */}
+      <div className="space-y-1.5">
+        <span className={`text-[11px] font-bold ${theme.textMuted} block`}>
+          관심 카테고리를 터치해 보세요
+        </span>
+        <div className="grid grid-cols-3 gap-1.5">
+          {INTEREST_CATEGORIES.map((cat) => {
+            const isActive = cat.id === activeCategoryId;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setActiveCategoryId(cat.id)}
+                className={`py-2 px-1 rounded-xl text-xs font-black transition-all flex flex-col items-center justify-center space-y-0.5 text-center active:scale-95 border ${
+                  isActive
+                    ? 'bg-gradient-to-r from-[#FF7A30] to-[#FFA070] text-white border-transparent shadow-xs'
+                    : 'bg-white text-slate-700 border-[#E5D7C7] hover:border-[#FFA070]/60 hover:bg-[#FFF9F5]'
+                }`}
+              >
+                <span className="text-base leading-none">{cat.icon}</span>
+                <span className="text-[11px] truncate">{cat.name.split('/')[0].trim()}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Subcategories (소분류 그리드/칩스) */}

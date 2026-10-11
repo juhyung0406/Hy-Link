@@ -13,16 +13,13 @@ interface MobileAppHeaderProps {
   unreadCount?: number;
   onOpenMyPage: () => void;
   onOpenAdminPortal?: () => void;
-  onOpenDemo?: () => void;
 }
 
 export const MobileAppHeader: React.FC<MobileAppHeaderProps> = ({
   activeTab,
   setActiveTab,
   currentUser,
-  unreadCount = 0,
   onOpenMyPage,
-  onOpenDemo,
 }) => {
   const { theme } = useAppTheme();
 

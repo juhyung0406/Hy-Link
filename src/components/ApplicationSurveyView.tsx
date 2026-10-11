@@ -34,9 +34,9 @@ export const ApplicationSurveyView: React.FC<ApplicationSurveyViewProps> = ({
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   // User Profile Info
-  const name = currentUser?.name || '김하늘';
-  const department = currentUser?.department || '반도체공정개발팀';
-  const tenure = currentUser?.tenure || '신입 (1년차)';
+  const name = currentUser?.name || '신입';
+  const department = currentUser?.department || '미배치 (부서배치 예정)';
+  const tenure = currentUser?.tenure || '1년차 (26.09 신입)';
 
   // Question 1: Purpose (260928 신입 특화)
   const purposeOptions = [
@@ -89,7 +89,7 @@ export const ApplicationSurveyView: React.FC<ApplicationSurveyViewProps> = ({
   const [selectedInterests, setSelectedInterests] = useState<string[]>(
     currentUser?.interests && currentUser.interests.length > 0
       ? currentUser.interests
-      : ['핸드드립커피', '클라이밍', '데이터분석']
+      : []
   );
 
   // Question 4-A: Group Size Preference (1:1, 4인 이하, 5인 이상 다인원)
@@ -128,7 +128,7 @@ export const ApplicationSurveyView: React.FC<ApplicationSurveyViewProps> = ({
   const [selectedHashtags, setSelectedHashtags] = useState<string[]>(
     currentUser?.hashtags && currentUser.hashtags.length > 0
       ? currentUser.hashtags
-      : ['#신입온보딩중', '#티타임환영', '#사내카페단골']
+      : []
   );
   const [customTagInput, setCustomTagInput] = useState('');
 

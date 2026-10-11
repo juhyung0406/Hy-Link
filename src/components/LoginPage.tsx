@@ -40,53 +40,19 @@ const formatPhoneInput = (val: string) => {
   return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
 };
 
-const DEFAULT_DEMO_ACCOUNT: RegisteredAccount = {
-  name: '김하늘',
-  phone: '010-8292-2609',
-  pinCode: '2609',
-  createdAt: '2026-09-28T09:00:00Z',
-  profile: {
-    name: '김하늘',
-    phone: '010-8292-2609',
-    pinCode: '2609',
-    department: '미배치 (10/14 부서배치 예정)',
-    jobTitle: 'TL (26.09 신입)',
-    tenure: '1년차 (26.09 입사)',
-    hireDate: '2026.09.28',
-    avatar: MASCOT_AVATARS.haru,
-    mbti: 'ENFP',
-    interests: ['핸드드립커피', '테니스', '러닝', '보드게임'],
-    hashtags: ['#ENFP', '#테니스', '#러닝크루', '#커피마실사람'],
-    kakaoOpenChatUrl: 'https://open.kakao.com/o/sHY2609Sky',
-    privacySettings: {
-      isNamePublic: true,
-      isAvatarPublic: true,
-      isMbtiPublic: true,
-      isInterestsPublic: true,
-      isHashtagsPublic: true,
-      isPhonePublic: false,
-    },
-    workHistory: [],
-    isWorkHistoryPublic: false,
-    groupSizePreference: '1:1',
-    isVerified260928: true,
-    isLoggedIn: true,
-  },
-};
-
 interface LoginPageProps {
   onLogin: (profile: UserProfile) => void;
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   // Mode: 'register' (첫 방문 신규 등록) vs 'login' (기존 정보로 로그인)
-  const [authMode, setAuthMode] = useState<'register' | 'login'>('login');
+  const [authMode, setAuthMode] = useState<'register' | 'login'>('register');
 
-  // Input states
-  const [name, setName] = useState('김하늘');
-  const [phone, setPhone] = useState('010-8292-2609');
-  const [pinCode, setPinCode] = useState('2609');
-  const [pinConfirm, setPinConfirm] = useState('2609');
+  // Input states (실사용 환경을 위해 모든 필드를 빈 값으로 초기화)
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [pinCode, setPinCode] = useState('');
+  const [pinConfirm, setPinConfirm] = useState('');
   const [showPin, setShowPin] = useState(false);
 
   // Validation & UI states
@@ -102,21 +68,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       const raw = localStorage.getItem(STORAGE_USERS_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+        if (Array.isArray(parsed)) {
+          // 실사용 환경을 위해 이전 데모 계정이 있다면 필터링
+          return parsed.filter((u) => u.name !== '김하늘');
         }
       }
     } catch (e) {
       console.error('Failed to read registered users from localStorage:', e);
     }
-    // Seed default demo user
-    const initial = [DEFAULT_DEMO_ACCOUNT];
-    try {
-      localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(initial));
-    } catch (e) {
-      console.error(e);
-    }
-    return initial;
+    return [];
   };
 
   const saveRegisteredUsers = (users: RegisteredAccount[]) => {
@@ -253,8 +213,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       const matchedUser = currentUsers.find(
         (u) =>
           cleanPhone(u.phone) === cleanP &&
-          (u.name.toLowerCase().trim() === trimmedName.toLowerCase() ||
-           trimmedName === '김하늘')
+          u.name.toLowerCase().trim() === trimmedName.toLowerCase()
       );
 
       if (!matchedUser) {
@@ -267,14 +226,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
         // Not registered at all
         setErrorMessage(
-          '등록된 회원 정보가 없습니다. [신규 등록] 탭에서 이름, 전화번호, 고유 번호 4자리를 먼저 등록해 주세요.'
+          '등록된 회원 정보가 없습니다. [신규 등록] 탭에서 이름, 전화번호, 비밀번호 4자리를 먼저 등록해 주세요.'
         );
         return;
       }
 
       // Check 4-digit PIN
-      if (matchedUser.pinCode !== pin && pin !== '2609') {
-        setErrorMessage('고유 번호 4자리가 일치하지 않습니다. 다시 입력해 주세요.');
+      if (matchedUser.pinCode !== pin) {
+        setErrorMessage('비밀번호 숫자 4자리가 일치하지 않습니다. 다시 입력해 주세요.');
         return;
       }
 
@@ -292,18 +251,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         onLogin(loggedInProfile);
       }, 300);
     }
-  };
-
-  // Quick 1-click test login for review convenience
-  const handleQuickDemoLogin = () => {
-    setName('김하늘');
-    setPhone('010-8292-2609');
-    setPinCode('2609');
-    setErrorMessage(null);
-    onLogin({
-      ...DEFAULT_DEMO_ACCOUNT.profile,
-      isLoggedIn: true,
-    });
   };
 
   return (
@@ -526,16 +473,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   <span>로그인</span>
                 </>
               )}
-            </button>
-
-            {/* Quick Demo Experience Button */}
-            <button
-              type="button"
-              onClick={handleQuickDemoLogin}
-              className="w-full py-2 rounded-2xl bg-[#FFF0E2] hover:bg-[#FFE3CE] text-[#D86E38] border border-[#FFA070]/40 font-black text-xs transition-all flex items-center justify-center space-x-1.5 active:scale-98"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>체험용 계정으로 바로 시작</span>
             </button>
           </div>
 

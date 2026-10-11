@@ -25,58 +25,17 @@ interface SentMatchItem {
 interface MyMatchesTabProps {
   sentMatches?: SentMatchItem[];
   onOpenMessenger?: (match: MatchResult) => void;
+  onGoToSurvey?: () => void;
 }
 
-export const MyMatchesTab: React.FC<MyMatchesTabProps> = ({ sentMatches = [] }) => {
+export const MyMatchesTab: React.FC<MyMatchesTabProps> = ({ 
+  sentMatches = [],
+  onGoToSurvey 
+}) => {
   const { theme } = useAppTheme();
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const mockFreshmenMatches: SentMatchItem[] = [
-    {
-      match: {
-        candidateId: 'emp_fresh_01',
-        candidateName: '이소현',
-        anonymousAlias: '운동/러닝을 좋아하는 260928 동기',
-        avatar: MASCOT_AVATARS.haru,
-        department: '미배치 (10/14 부서배치 예정)',
-        jobTitle: 'TL (26.09 신입)',
-        matchScore: 98,
-        hashtags: ['#러닝크루', '#테니스', '#ESTP', '#주말운동'],
-        synergyKeywords: ['러닝', '테니스', '또래동기'],
-        matchReason: '선호하신 취미(러닝/테니스) 및 또래 동기 조건이 98% 일치합니다.',
-        commonGround: '테니스, 러닝, 기숙사 생활',
-        icebreakers: ['동기님 안녕하세요! 테니스/러닝 메이트로 연결되었어요 😊'],
-        suggestedAgenda: '이번 주말 실내 코트 운동 또는 기숙사 티타임',
-        outreachMessage: '안녕하세요! 오픈채팅으로 편하게 이야기 나눠요.',
-      },
-      status: 'accepted',
-      sentAt: '오늘 오전 11:20',
-      meetingTime: '오픈채팅 조율 중',
-    },
-    {
-      match: {
-        candidateId: 'emp_fresh_02',
-        candidateName: '오상윤',
-        anonymousAlias: '보드게임과 커피를 좋아하는 동기',
-        avatar: MASCOT_AVATARS.habeam,
-        department: '미배치 (10/14 부서배치 예정)',
-        jobTitle: 'TL (26.09 신입)',
-        matchScore: 95,
-        hashtags: ['#보드게임', '#카페투어', '#ENTP', '#동기수다'],
-        synergyKeywords: ['보드게임', '커피챗', '동기친목'],
-        matchReason: '선호하신 모임 목적(취미 메이트)과 관심사가 잘 맞습니다.',
-        commonGround: '루미큐브, 핸드드립커피',
-        icebreakers: ['안녕하세요! 교육 끝나고 SUPEX 카페에서 보드게임 해요 ㅎㅎ'],
-        suggestedAgenda: '퇴근 후 SUPEX 북카페 티타임',
-        outreachMessage: '안녕하세요! 오픈채팅 링크 드립니다.',
-      },
-      status: 'pending',
-      sentAt: '어제 16:40',
-      meetingTime: '50명 풀 달성 후 연결 대기',
-    },
-  ];
-
-  const displayList = sentMatches.length > 0 ? sentMatches : mockFreshmenMatches;
+  const displayList = sentMatches;
 
   const handleCopy = (id: string, text: string) => {
     navigator.clipboard.writeText(text);
@@ -90,43 +49,66 @@ export const MyMatchesTab: React.FC<MyMatchesTabProps> = ({ sentMatches = [] }) 
       <div className="flex items-center justify-between pt-1">
         <div>
           <h2 className="text-base font-black text-[#5A3E36]">내 매칭 목록</h2>
-          <p className="text-[11px] text-slate-500">오픈채팅으로 대화를 나눠보세요.</p>
+          <p className="text-[11px] text-slate-500">신청 완료 및 성사된 매칭입니다.</p>
         </div>
         <span className="text-[11px] font-bold text-[#D86E38] bg-[#FFF0E2] px-2 py-0.5 rounded-full">
-          {displayList.length}명
+          {displayList.length}건
         </span>
       </div>
 
-      {/* Matches List */}
-      <div className="space-y-3">
-        {displayList.map((item) => {
-          const isAccepted = item.status === 'accepted';
-          const mockKakaoUrl = `https://open.kakao.com/o/sHY2609_${item.match.candidateName}`;
-
-          return (
-            <div
-              key={item.match.candidateId}
-              className="bg-white p-4 rounded-3xl border border-[#E5D7C7] shadow-xs space-y-3.5 hover:shadow-md transition-all"
+      {/* Matches List or Empty State */}
+      {displayList.length === 0 ? (
+        <div className="py-12 px-4 text-center rounded-3xl bg-white border border-[#E5D7C7] space-y-3">
+          <div className="w-12 h-12 mx-auto rounded-full bg-[#FFF0E2] flex items-center justify-center text-[#FF7A30]">
+            <HeartHandshake className="w-6 h-6" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-sm font-bold text-[#5A3E36]">아직 성사된 매칭이 없습니다</h3>
+            <p className="text-xs text-slate-500">
+              1:1 매칭 신청서를 작성하고 나와 꼭 맞는 동기를 찾아보세요!
+            </p>
+          </div>
+          {onGoToSurvey && (
+            <button
+              type="button"
+              onClick={onGoToSurvey}
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#FF7A30] to-[#FFA070] text-white text-xs font-bold shadow-xs active:scale-95"
             >
-              {/* Header: Status Pill */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-1.5">
-                  <span
-                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
-                      isAccepted
-                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                        : 'bg-amber-100 text-amber-800 border border-amber-200'
-                    }`}
-                  >
-                    {isAccepted ? '✓ 매칭 성사 (오픈채팅 가능)' : '⏳ 참여인원 모집 후 연결 대기'}
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-medium">({item.sentAt})</span>
-                </div>
+              <HeartHandshake className="w-3.5 h-3.5" />
+              <span>1:1 매칭 신청하기</span>
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {displayList.map((item) => {
+            const isAccepted = item.status === 'accepted';
+            const mockKakaoUrl = `https://open.kakao.com/o/sHY2609_${item.match.candidateName}`;
 
-                <span className="text-xs font-black text-[#FF7A30]">
-                  일치도 {item.match.matchScore}%
-                </span>
-              </div>
+            return (
+              <div
+                key={item.match.candidateId}
+                className="bg-white p-4 rounded-3xl border border-[#E5D7C7] shadow-xs space-y-3.5 hover:shadow-md transition-all"
+              >
+                {/* Header: Status Pill */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-1.5">
+                    <span
+                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
+                        isAccepted
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                          : 'bg-amber-100 text-amber-800 border border-amber-200'
+                      }`}
+                    >
+                      {isAccepted ? '✓ 매칭 성사 (오픈채팅 가능)' : '⏳ 참여인원 모집 후 연결 대기'}
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-medium">({item.sentAt})</span>
+                  </div>
+
+                  <span className="text-xs font-black text-[#FF7A30]">
+                    일치도 {item.match.matchScore}%
+                  </span>
+                </div>
 
               {/* Colleague Summary */}
               <div className="flex items-start space-x-3.5">
@@ -224,6 +206,7 @@ export const MyMatchesTab: React.FC<MyMatchesTabProps> = ({ sentMatches = [] }) 
           );
         })}
       </div>
+      )}
     </div>
   );
 };

@@ -42,6 +42,7 @@ export const GatheringTab: React.FC<GatheringTabProps> = ({
   const [newCategory, setNewCategory] = useState<'dorm' | 'sports' | 'hobby' | 'coffee' | 'meal'>('dorm');
   const [newDesc, setNewDesc] = useState('');
   const [newDate, setNewDate] = useState('');
+  const [newTime, setNewTime] = useState('');
   const [newLocation, setNewLocation] = useState('');
   const [newMaxCount, setNewMaxCount] = useState<number>(4);
   const [newKakaoLink, setNewKakaoLink] = useState('');
@@ -83,13 +84,15 @@ export const GatheringTab: React.FC<GatheringTabProps> = ({
       meal: '맛집 / 식사',
     };
 
+    const targetDateFormatted = newTime.trim() ? `${newDate} ${newTime}` : newDate.trim();
+
     const newItem: GatheringItem = {
       id: `g_${Date.now()}`,
       title: newTitle.trim(),
       category: newCategory,
       categoryLabel: categoryLabelMap[newCategory],
       description: newDesc.trim() || '260928 동기들과 함께하는 편안한 모임입니다.',
-      targetDate: newDate.trim(),
+      targetDate: targetDateFormatted,
       location: newLocation.trim() || '이천 캠퍼스 기숙사 로비',
       creatorName: `${currentUser?.name || '신입'} TL`,
       creatorAvatar: currentUser?.avatar || 'https://via.placeholder.com/150',
@@ -108,6 +111,7 @@ export const GatheringTab: React.FC<GatheringTabProps> = ({
     setNewTitle('');
     setNewDesc('');
     setNewDate('');
+    setNewTime('');
     setNewLocation('');
     setNewKakaoLink('');
     setNewTagInput('');
@@ -130,8 +134,8 @@ export const GatheringTab: React.FC<GatheringTabProps> = ({
         </button>
       </div>
 
-      {/* Category Filter Pills */}
-      <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none">
+      {/* Category Filter Pills (Wrap Layout for easy one-tap access) */}
+      <div className="flex flex-wrap gap-1.5">
         {categories.map((c) => {
           const isActive = selectedCategory === c.id;
           return (
@@ -151,100 +155,122 @@ export const GatheringTab: React.FC<GatheringTabProps> = ({
         })}
       </div>
 
-      {/* Gathering Cards List */}
-      <div className="space-y-3">
-        {filteredGatherings.map((item) => {
-          const isFull = item.currentCount >= item.maxCount;
-          return (
-            <div
-              key={item.id}
-              className="bg-white p-4 rounded-3xl border border-[#E5D7C7] shadow-xs space-y-3 hover:shadow-md transition-all"
-            >
-              {/* Card Top: Category Label & Member Count */}
-              <div className="flex items-center justify-between">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#FFF0E2] text-[#D86E38] border border-[#FFA070]/30">
-                  {item.categoryLabel}
-                </span>
-
-                <div className="flex items-center space-x-1 text-xs">
-                  <span className={`font-black ${isFull ? 'text-rose-600' : 'text-[#FF7A30]'}`}>
-                    {item.currentCount} / {item.maxCount}명
+      {/* Gathering Cards List or Clean Empty State */}
+      {filteredGatherings.length === 0 ? (
+        <div className="py-12 px-4 text-center rounded-3xl bg-white border border-[#E5D7C7] space-y-3">
+          <div className="w-12 h-12 mx-auto rounded-full bg-[#FFF0E2] flex items-center justify-center text-[#FF7A30]">
+            <Users className="w-6 h-6" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-sm font-bold text-[#5A3E36]">개설된 소모임 및 번개가 없습니다</h3>
+            <p className="text-xs text-slate-500">
+              첫 번째 동기 번개나 소모임을 직접 만들어보세요!
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsCreateModalOpen(true)}
+            className="inline-flex items-center space-x-1 px-4 py-2 rounded-xl bg-gradient-to-r from-[#FF7A30] to-[#FFA070] text-white text-xs font-bold shadow-xs active:scale-95"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>첫 모임 만들기</span>
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filteredGatherings.map((item) => {
+            const isFull = item.currentCount >= item.maxCount;
+            return (
+              <div
+                key={item.id}
+                className="bg-white p-4 rounded-3xl border border-[#E5D7C7] shadow-xs space-y-3 hover:shadow-md transition-all"
+              >
+                {/* Card Top: Category Label & Member Count */}
+                <div className="flex items-center justify-between">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#FFF0E2] text-[#D86E38] border border-[#FFA070]/30">
+                    {item.categoryLabel}
                   </span>
-                  <span className="text-[10px] text-slate-400">({item.createdAt})</span>
-                </div>
-              </div>
 
-              {/* Title & Description */}
-              <div>
-                <h3 className="font-black text-sm sm:text-base text-[#5A3E36] leading-snug">
-                  {item.title}
-                </h3>
-                <p className="text-xs text-slate-600 mt-1 line-clamp-2 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-
-              {/* Date & Location Pill */}
-              <div className="p-2.5 rounded-xl bg-[#FAF4ED] border border-[#EFE3D5] text-xs text-slate-700 space-y-1">
-                <div className="flex items-center space-x-2">
-                  <Calendar className="w-3.5 h-3.5 text-[#FFA070] shrink-0" />
-                  <span className="font-bold text-[#5A3E36]">{item.targetDate}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <MapPin className="w-3.5 h-3.5 text-[#FFA070] shrink-0" />
-                  <span className="truncate">{item.location}</span>
-                </div>
-              </div>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-1.5">
-                {item.tags.map((t, idx) => (
-                  <span
-                    key={idx}
-                    className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-[#E5D7C7] text-[#8C6D62]"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-
-              {/* Creator Info & Action Button */}
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <img
-                    src={item.creatorAvatar}
-                    alt={item.creatorName}
-                    className="w-7 h-7 rounded-full object-cover border border-[#FFA070]"
-                  />
-                  <div>
-                    <span className="text-xs font-black text-[#5A3E36] block">
-                      {item.creatorName}
+                  <div className="flex items-center space-x-1 text-xs">
+                    <span className={`font-black ${isFull ? 'text-rose-600' : 'text-[#FF7A30]'}`}>
+                      {item.currentCount} / {item.maxCount}명
                     </span>
-                    <span className="text-[9px] text-slate-400">모집 개설자</span>
+                    <span className="text-[10px] text-slate-400">({item.createdAt})</span>
                   </div>
                 </div>
 
-                {/* Join / Open Chat Button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    onJoinGathering(item.id);
-                    setActiveKakaoModal(item);
-                  }}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center space-x-1.5 transition-all active:scale-95 shadow-xs ${
-                    isFull
-                      ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-[#FF7A30] to-[#FFA070] text-white hover:brightness-105'
-                  }`}
-                >
-                  <MessageCircle className="w-3.5 h-3.5" />
-                  <span>{isFull ? '마감됨' : '참여 및 오픈채팅'}</span>
-                </button>
+                {/* Title & Description */}
+                <div>
+                  <h3 className="font-black text-sm sm:text-base text-[#5A3E36] leading-snug">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1 line-clamp-2 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+
+                {/* Date & Location Pill */}
+                <div className="p-2.5 rounded-xl bg-[#FAF4ED] border border-[#EFE3D5] text-xs text-slate-700 space-y-1">
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="w-3.5 h-3.5 text-[#FFA070] shrink-0" />
+                    <span className="font-bold text-[#5A3E36]">{item.targetDate}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <MapPin className="w-3.5 h-3.5 text-[#FFA070] shrink-0" />
+                    <span className="truncate">{item.location}</span>
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-1.5">
+                  {item.tags.map((t, idx) => (
+                    <span
+                      key={idx}
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-[#E5D7C7] text-[#8C6D62]"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Creator Info & Action Button */}
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <img
+                      src={item.creatorAvatar}
+                      alt={item.creatorName}
+                      className="w-7 h-7 rounded-full object-cover border border-[#FFA070]"
+                    />
+                    <div>
+                      <span className="text-xs font-black text-[#5A3E36] block">
+                        {item.creatorName}
+                      </span>
+                      <span className="text-[9px] text-slate-400">모집 개설자</span>
+                    </div>
+                  </div>
+
+                  {/* Join / Open Chat Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onJoinGathering(item.id);
+                      setActiveKakaoModal(item);
+                    }}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-black flex items-center space-x-1.5 transition-all active:scale-95 shadow-xs ${
+                      isFull
+                        ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-[#FF7A30] to-[#FFA070] text-white hover:brightness-105'
+                    }`}
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    <span>{isFull ? '마감됨' : '참여 및 오픈채팅'}</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* 1. KAKAO OPEN CHAT DIALOG MODAL */}
       {activeKakaoModal && (
@@ -369,28 +395,50 @@ export const GatheringTab: React.FC<GatheringTabProps> = ({
                 />
               </div>
 
-              {/* Date & Time */}
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-[11px] font-black text-[#5A3E36] mb-1">모임 일시</label>
-                  <input
-                    type="text"
-                    required
-                    value={newDate}
-                    onChange={(e) => setNewDate(e.target.value)}
-                    placeholder="예: 오늘 20:00"
-                    className="w-full p-2.5 rounded-xl border border-[#E5D7C7] bg-[#FAF4ED] font-bold text-slate-800"
-                  />
+              {/* Date & Time (일자와 시간으로 명확히 분류) */}
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[11px] font-black text-[#5A3E36] mb-1 flex items-center space-x-1">
+                      <Calendar className="w-3 h-3 text-[#FF7A30]" />
+                      <span>모임 일자</span>
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      value={newDate}
+                      onChange={(e) => setNewDate(e.target.value)}
+                      className="w-full p-2.5 rounded-xl border border-[#E5D7C7] bg-[#FAF4ED] font-bold text-slate-800 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-black text-[#5A3E36] mb-1 flex items-center space-x-1">
+                      <Clock className="w-3 h-3 text-[#FF7A30]" />
+                      <span>모임 시간</span>
+                    </label>
+                    <input
+                      type="time"
+                      required
+                      value={newTime}
+                      onChange={(e) => setNewTime(e.target.value)}
+                      className="w-full p-2.5 rounded-xl border border-[#E5D7C7] bg-[#FAF4ED] font-bold text-slate-800 text-xs"
+                    />
+                  </div>
                 </div>
+
+                {/* Capacity */}
                 <div>
-                  <label className="block text-[11px] font-black text-[#5A3E36] mb-1">모집 정원</label>
+                  <label className="block text-[11px] font-black text-[#5A3E36] mb-1 flex items-center space-x-1">
+                    <Users className="w-3 h-3 text-[#FF7A30]" />
+                    <span>모집 정원 (인원수)</span>
+                  </label>
                   <select
                     value={newMaxCount}
                     onChange={(e) => setNewMaxCount(Number(e.target.value))}
-                    className="w-full p-2.5 rounded-xl border border-[#E5D7C7] bg-[#FAF4ED] font-bold text-slate-800"
+                    className="w-full p-2.5 rounded-xl border border-[#E5D7C7] bg-[#FAF4ED] font-bold text-slate-800 text-xs"
                   >
-                    {[2, 3, 4, 5, 6, 8].map((num) => (
-                      <option key={num} value={num}>{num}명</option>
+                    {[2, 3, 4, 5, 6, 8, 10].map((num) => (
+                      <option key={num} value={num}>{num}명 (개설자 포함)</option>
                     ))}
                   </select>
                 </div>

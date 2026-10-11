@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AppTab } from './components/Navbar';
 import { MobileAppHeader } from './components/MobileAppHeader';
 import { MobileBottomTabBar } from './components/MobileBottomTabBar';
@@ -11,26 +11,25 @@ import { RoadmapTab } from './components/RoadmapTab';
 import { LoginPage } from './components/LoginPage';
 import { MyPageModal } from './components/MyPageModal';
 import { AdminPortalModal } from './components/AdminPortalModal';
-import { LiveInteractiveDemoController } from './components/LiveInteractiveDemoController';
 import { GatheringTab } from './components/GatheringTab';
 import { INITIAL_COLLEAGUES, COLLEAGUE_AVATARS } from './data/mockColleagues';
 import { INITIAL_GATHERINGS, MASCOT_AVATARS } from './data/mockGatherings';
 import { ColleagueProfile, MatchResult, UserProfile, GatheringItem } from './types';
-import { Smartphone, Play } from 'lucide-react';
+import { Smartphone } from 'lucide-react';
 import { ThemeProvider, useAppTheme } from './theme/ThemeContext';
 
 const DEFAULT_USER: UserProfile = {
-  name: '김하늘',
-  phone: '010-8292-2609',
-  pinCode: '2609',
+  name: '',
+  phone: '',
+  pinCode: '',
   department: '미배치 (10/14 부서배치 예정)',
   jobTitle: 'TL (26.09 신입)',
   tenure: '1년차 (26.09 입사)',
   avatar: MASCOT_AVATARS.haru,
   mbti: 'ENFP',
-  interests: ['핸드드립커피', '테니스', '러닝', '보드게임'],
-  hashtags: ['#ENFP', '#테니스', '#러닝크루', '#커피마실사람'],
-  kakaoOpenChatUrl: 'https://open.kakao.com/o/sHY2609Sky',
+  interests: [],
+  hashtags: [],
+  kakaoOpenChatUrl: '',
   privacySettings: {
     isNamePublic: true,
     isAvatarPublic: true,
@@ -43,7 +42,7 @@ const DEFAULT_USER: UserProfile = {
   isWorkHistoryPublic: false,
   groupSizePreference: '1:1',
   isVerified260928: true,
-  isLoggedIn: false, // Show Login Page first by default as requested!
+  isLoggedIn: false, // Show Login / Register Page first by default!
 };
 
 function AppContent() {
@@ -55,15 +54,17 @@ function AppContent() {
       const saved = localStorage.getItem('hylink_user_profile');
       if (saved) {
         const parsed = JSON.parse(saved);
-        return {
-          ...parsed,
-          avatar: (parsed.avatar && !parsed.avatar.includes('unsplash')) ? parsed.avatar : COLLEAGUE_AVATARS.leeKm,
-          hashtags: parsed.hashtags || ['#신입온보딩중', '#티타임환영'],
-          workHistory: parsed.workHistory || DEFAULT_USER.workHistory,
-          isWorkHistoryPublic: parsed.isWorkHistoryPublic ?? true,
-          groupSizePreference: parsed.groupSizePreference || '1:1',
-          isLoggedIn: parsed.isLoggedIn ?? false,
-        };
+        if (parsed.name && parsed.name !== '김하늘') {
+          return {
+            ...parsed,
+            avatar: (parsed.avatar && !parsed.avatar.includes('unsplash')) ? parsed.avatar : MASCOT_AVATARS.haru,
+            hashtags: parsed.hashtags || [],
+            workHistory: parsed.workHistory || [],
+            isWorkHistoryPublic: parsed.isWorkHistoryPublic ?? false,
+            groupSizePreference: parsed.groupSizePreference || '1:1',
+            isLoggedIn: parsed.isLoggedIn ?? false,
+          };
+        }
       }
     } catch (e) {
       console.error('Error loading saved user profile:', e);
@@ -74,7 +75,6 @@ function AppContent() {
   // Modals
   const [isMyPageOpen, setIsMyPageOpen] = useState(false);
   const [isAdminPortalOpen, setIsAdminPortalOpen] = useState(false);
-  const [isDemoActive, setIsDemoActive] = useState(false);
 
   // Mobile App Native Tabs
   const [activeTab, setActiveTab] = useState<AppTab>('results');
@@ -93,17 +93,30 @@ function AppContent() {
       meetingTime?: string;
       isGroup?: boolean;
     }[]
-  >([]);
-
-  // 260928 Freshmen Gatherings & Lightning Meetups
-  const [gatherings, setGatherings] = useState<GatheringItem[]>(() => {
+  >(() => {
     try {
-      const saved = localStorage.getItem('hylink_gatherings');
+      const saved = localStorage.getItem('hylink_sent_matches');
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.error(e);
     }
-    return INITIAL_GATHERINGS;
+    return [];
+  });
+
+  // 260928 Freshmen Gatherings & Lightning Meetups (실사용 환경: 기존 더미 데이터 정리)
+  const [gatherings, setGatherings] = useState<GatheringItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('hylink_gatherings');
+      if (saved) {
+        const parsed: GatheringItem[] = JSON.parse(saved);
+        return parsed.filter(
+          (g) => !['g_001', 'g_002', 'g_003', 'g_004', 'g_005'].includes(g.id)
+        );
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return [];
   });
 
   const handleAddGathering = (item: GatheringItem) => {
@@ -143,13 +156,6 @@ function AppContent() {
     } catch (e) {
       console.error('Error saving user profile to storage:', e);
     }
-  };
-
-  const handleStartDemo = () => {
-    if (!currentUser.isLoggedIn) {
-      saveUserToStorage({ ...currentUser, isLoggedIn: true });
-    }
-    setIsDemoActive(true);
   };
 
   const handleLogin = (profile: UserProfile) => {
@@ -282,16 +288,24 @@ function AppContent() {
   };
 
   const handleInviteSent = (match: MatchResult) => {
-    setSentMatches((prev) => [
-      {
-        match,
-        status: 'accepted',
-        sentAt: '방금 전',
-        meetingTime: match.suggestedAgenda || '평일 점심시간 20~30분 사내 카페',
-        isGroup: match.isGroup,
-      },
-      ...prev,
-    ]);
+    setSentMatches((prev) => {
+      const updated = [
+        {
+          match,
+          status: 'accepted' as const,
+          sentAt: '방금 전',
+          meetingTime: match.suggestedAgenda || '평일 점심시간 20~30분 사내 카페',
+          isGroup: match.isGroup,
+        },
+        ...prev,
+      ];
+      try {
+        localStorage.setItem('hylink_sent_matches', JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
   };
 
   // 1. If not logged in, render the Login / Profile Setup Page first!
@@ -319,22 +333,7 @@ function AppContent() {
           currentUser={currentUser}
           onOpenMyPage={() => setIsMyPageOpen(true)}
           onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
-          onOpenDemo={handleStartDemo}
         />
-
-        {/* Quick Demo Pill */}
-        <div className="px-4 pt-2 pb-0.5">
-          <button
-            onClick={handleStartDemo}
-            className="w-full py-1.5 px-3 rounded-xl bg-[#FFF0E2] hover:bg-[#FFE5D2] border border-[#FFA070]/30 text-[#D86E38] transition-all flex items-center justify-between group active:scale-98"
-          >
-            <div className="flex items-center space-x-1.5">
-              <Play className="w-3 h-3 fill-[#D86E38] text-[#D86E38]" />
-              <span className="text-[11px] font-bold">화면 자동 시연 보기</span>
-            </div>
-            <span className="text-[10px] font-bold opacity-80 group-hover:opacity-100">시작 ▶</span>
-          </button>
-        </div>
 
         {/* Scrollable Mobile Content Viewport */}
         <main className="flex-1 w-full px-4 pt-3 pb-6 overflow-y-auto">
@@ -374,6 +373,7 @@ function AppContent() {
           {activeTab === 'mymatches' && (
             <MyMatchesTab
               sentMatches={sentMatches}
+              onGoToSurvey={() => setActiveTab('survey')}
               onOpenMessenger={(match) => {
                 setActiveTab('results');
               }}
@@ -426,18 +426,6 @@ function AppContent() {
       <AdminPortalModal
         isOpen={isAdminPortalOpen}
         onClose={() => setIsAdminPortalOpen(false)}
-      />
-
-      {/* Real Live Interactive Demo Controller with Pixel-Perfect Virtual Mouse Cursor */}
-      <LiveInteractiveDemoController
-        isActive={isDemoActive}
-        onClose={() => setIsDemoActive(false)}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isMyPageOpen={isMyPageOpen}
-        setIsMyPageOpen={setIsMyPageOpen}
-        currentUser={currentUser}
-        setCurrentUser={setCurrentUser}
       />
     </div>
   );
